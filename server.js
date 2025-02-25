@@ -1,4 +1,5 @@
 const express = require('express');
+const routes = require('./routes');
 const connectDB = require('./db'); // adjust path if needed
 
 const app = express();
@@ -10,10 +11,8 @@ connectDB();
 // Middleware to parse JSON
 app.use(express.json());
 
-// Example route
-app.get('/', (req, res) => {
-    res.send('Hello, MEVN app with MongoDB!');
-});
+// Use your custom routes
+app.use('/api', routes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
