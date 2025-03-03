@@ -13,10 +13,16 @@
       </ul>
     </div>
 
-    <!-- Buton pentru afișarea formularului -->
-    <button @click="toggleForm" class="toggle-btn">
-      {{ showForm ? 'Renunță' : 'Adaugă mamă nouă' }}
-    </button>
+    <div class="buttons-group">
+      <button v-if="mame.length" @click="downloadExcel" class="download-btn">
+        Descarcă ca Excel
+      </button>
+
+      <!-- Buton pentru afișarea formularului -->
+      <button @click="toggleForm" class="toggle-btn">
+        {{ showForm ? 'Renunță' : 'Adaugă mamă nouă' }}
+      </button>
+    </div>
 
     <!-- Formularul de adăugare -->
     <div v-if="showForm" class="form-container">
@@ -212,7 +218,6 @@ const nouaMama = ref({
 const fetchMame = async () => {
   try {
     const response = await axios.get('api/mothers')
-    console.log(response.data)
     mame.value = response.data
   } catch (error) {
     console.error('Eroare la preluarea mamelor:', error)
@@ -221,6 +226,11 @@ const fetchMame = async () => {
 
 const toggleForm = () => {
   showForm.value = !showForm.value
+}
+
+const downloadExcel = () => {
+  // Simply change the window location to the Excel endpoint
+  window.location.href = 'api/mothers/excel'
 }
 
 const processInputList = (input) => {
@@ -286,91 +296,128 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Almost full-width container */
+/* Container styling */
 .container {
-  width: 95%;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 2rem auto;
   padding: 1rem;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
 }
 
-/* Center headings */
+/* Headings */
 h1, h2, h3, legend {
   text-align: center;
-}
-
-.lista {
   margin-bottom: 1rem;
 }
 
-.toggle-btn,
-.submit-btn {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
+/* List styling */
+.lista {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Form container with border */
+/* Button styling */
+.toggle-btn,
+.submit-btn {
+  display: inline-block;
+  margin: 1rem auto;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Form container */
 .form-container {
-  border: 1px solid #ccc;
-  padding: 1rem;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  margin-bottom: 2rem;
 }
 
 /* Fieldset sections */
 .section {
-  margin-bottom: 1.5rem;
-  border: 1px solid #ddd;
-  padding: 1rem;
+  border: none;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+.section legend {
+  font-weight: bold;
+  padding: 0.5rem 0;
 }
 
-/* Each row is a flex container that wraps */
+/* Layout for rows and fields */
 .row {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
-/* Each field: inline, with a minimum width */
 .field {
-  flex: 1 1 200px;
+  flex: 1 1 300px;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
 }
-
-/* For full-width fields */
 .field.full {
-  flex-basis: 100%;
+  flex: 1 1 100%;
 }
 
-/* Inline labels and inputs */
+/* Labels and inputs */
 label {
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  width: 100%;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
 }
-
 input, select {
-  padding: 0.4rem;
+  padding: 0.6rem;
   font-size: 1rem;
-  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+input:focus, select:focus {
+  outline: none;
 }
 
 /* Subsection styling */
 .subsection {
-  width: 100%;
   border: 1px dashed #aaa;
-  padding: 0.5rem;
+  border-radius: 4px;
+  padding: 1rem;
 }
 .inline-fields {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+.inline-fields label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.buttons-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.download-btn {
+  display: inline-block;
+  margin: 1rem auto;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  transition: background-color 0.3s ease;
 }
 </style>
